@@ -45,11 +45,22 @@ export class ReactDateTimeUI extends Component<ReactDateTimeUIProps> {
     private onBlur(dateTimeSelected: moment.Moment): void {
         //on leave, call onclick method and pass the selected datetime
         this.closeDate = Date.now();
-        this.props.onBlur(dateTimeSelected);
+        if(this.props.locale === 'th_TH')
+        {
+            if(moment(dateTimeSelected)) {
+                this.props.onBlur(moment(dateTimeSelected).subtract(543,'year'));
+            }
+        }else{
+            this.props.onBlur(moment(dateTimeSelected))
+        }
     }
 
     private onChange(dateTimeSelected: moment.Moment): void {
-        this.setState({value: dateTimeSelected});
+        if(this.props.locale === 'th_TH'){
+            this.setState({value: moment(dateTimeSelected).toDate()});
+        } else {
+            this.setState({value: moment(dateTimeSelected).toDate()})
+        }
     }
 
     componentDidUpdate(prevProps: ReactDateTimeUIProps) {
@@ -58,12 +69,16 @@ export class ReactDateTimeUI extends Component<ReactDateTimeUIProps> {
         } else if(!(this.props.dateTimeValue) && !(prevProps.dateTimeValue)) {
             return;
         } else {
-            this.setState({value: this.props.dateTimeValue})
+            this.setState({value: moment(this.props.dateTimeValue).toDate()});
         }
     }
 
     componentDidMount() {
-        this.setState({value: this.props.dateTimeValue})
+        if(this.props.locale === 'th_TH'){
+            this.setState({value: moment(this.props.dateTimeValue).add(543,'year')})
+        } else {
+            this.setState({value: moment(this.props.dateTimeValue).toDate()})
+        }
     }
 
     private onFocus(): void {
@@ -136,7 +151,7 @@ export class ReactDateTimeUI extends Component<ReactDateTimeUIProps> {
                             ref = {ref => {
                                 this.datetimeRef = ref;
                             }}
-                            showWeekNumbers = {this.props.showWeekNumbers}
+                            //showWeekNumbers = {this.props.showWeekNumbers}
                         />
                         <button type= "button" className={classNamesButton} onClick = {this.OnButtonClickHandle}>
                             <span className="glyphicon glyphicon-calendar"></span>

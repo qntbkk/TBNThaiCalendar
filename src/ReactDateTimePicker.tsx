@@ -2,7 +2,7 @@ import { Component, ReactNode, createElement, Fragment } from "react";
 import { ReactDateTimeUI } from "./components/ReactDateTimePickerUI";
 import { hot } from "react-hot-loader/root";
 import { ReactDateTimePickerContainerProps } from "../typings/ReactDateTimePickerProps";
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 import { Alert } from "./components/Alert";
 import "./ui/ReactDateTimePicker.css";
 
@@ -18,7 +18,7 @@ class ReactDateTimePicker extends Component<ReactDateTimePickerContainerProps, R
         // If datetimeSelected is not a string, the date is valid
         if (typeof dateTimeSelected !== 'string') {
             // Set the value to the attribute
-            this.props.dateTimeAttribute.setValue(new Date(dateTimeSelected.toDate()))
+            this.props.dateTimeAttribute.setValue(new Date( dateTimeSelected.toDate()))
             // Set validDate to true, to be used in the renderer
             this.setInvalidDateAttribute(true);
         } else if (dateTimeSelected === "") {
@@ -68,7 +68,14 @@ class ReactDateTimePicker extends Component<ReactDateTimePickerContainerProps, R
             timeFormat = typeof this.props.timeFormat === 'undefined' || this.props.timeFormat.value === "" ? true : this.props.timeFormat.value;
         }
 
-        let dateTimeValue = typeof this.props.dateTimeAttribute.value === 'undefined' ? undefined : moment(this.props.dateTimeAttribute.value);
+        let dateTimeValue: undefined | Date | moment.Moment;
+        //set locale thai year
+        if(locale === 'th_TH'){
+            dateTimeValue = typeof this.props.dateTimeAttribute.value === 'undefined' ? undefined : moment(this.props.dateTimeAttribute.value).add(543, 'year');
+        }else{
+            dateTimeValue = typeof this.props.dateTimeAttribute.value === 'undefined' ? undefined : moment(this.props.dateTimeAttribute.value);
+        }
+        
 
         //determine min and max date (can be undefined and value can be undefined)
         let minDate = typeof this.props.minDateAttribute === 'undefined' ? undefined :
